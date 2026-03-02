@@ -14,7 +14,7 @@ vet:
 
 # run the basic example — see litty-logs in action bestie 🔥
 example:
-    go run ./examples/basic/
+    cd examples/basic && go run .
 
 # bump the version bestie — usage: just bump major|minor|patch 🔥
 bump part:
