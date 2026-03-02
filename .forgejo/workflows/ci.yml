@@ -1,0 +1,26 @@
+# ci pipeline — makes sure nothing is bricked before we merge no cap 🔥
+name: ci
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  build-and-test:
+    runs-on: linux
+    container:
+      image: golang:1.24
+    steps:
+      - name: yoink the code 📥
+        uses: actions/checkout@v4
+
+      - name: build — make sure it compiles bestie 🏗️🔥
+        run: go build ./...
+
+      - name: test — check all the vibes 🧪🔥
+        run: go test -v -race -count=1 ./...
+
+      - name: vet — lint the vibes 🔍
+        run: go vet ./...

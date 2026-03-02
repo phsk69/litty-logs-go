@@ -1,0 +1,125 @@
+# release pipeline — tag goes brrr and Go module hits proxy.golang.org 🚀
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: linux
+    container:
+      image: golang:1.24
+    steps:
+      - name: yoink the code 📥
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: figure out the version from the tag 🏷️
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          if echo "$VERSION" | grep -q '-'; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: sanity check — make sure tag matches VERSION file 🧐
+        run: |
+          file_version=$(cat VERSION)
+          tag_version="${{ steps.version.outputs.version }}"
+          if [ "$file_version" != "$tag_version" ]; then
+            echo "bruh the tag says ${tag_version} but VERSION file says ${file_version} thats not it 💀"
+            exit 1
+          fi
+
+      - name: build one more time for the culture 🏗️
+        run: go build ./...
+
+      - name: test one more time for the culture 🧪
+        run: go test -v -race -count=1 ./...
+
+      - name: poke proxy.golang.org to index the module 📡
+        run: |
+          GOPROXY=https://proxy.golang.org GO111MODULE=on \
+            go list -m github.com/phsk69/litty-logs-go@${{ steps.version.outputs.tag }} || true
+
+      - name: extract changelog section for this version 📜
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          NOTES=$(awk "/^## \[${VERSION}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md)
+          if [ -z "$NOTES" ]; then
+            NOTES="v${VERSION} dropped no cap 🔥"
+          fi
+          {
+            echo "notes<<CHANGELOG_EOF"
+            echo "$NOTES"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: create forgejo release 🏠🔥
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NOTES: ${{ steps.changelog.outputs.notes }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ steps.version.outputs.tag }}"
+          API_URL="${GITHUB_SERVER_URL}/api/v1"
+          REPO="${GITHUB_REPOSITORY}"
+
+          HTTP_CODE=$(curl -s -o /tmp/release.json -w "%{http_code}" \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            "${API_URL}/repos/${REPO}/releases/tags/${TAG}")
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "forgejo release already exists — skipping creation 💅"
+          else
+            curl -s -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "{\"tag_name\": \"${TAG}\", \"name\": \"v${VERSION} — new drop 🔥\", \"body\": $(echo "$RELEASE_NOTES" | jq -Rs .), \"prerelease\": ${{ steps.version.outputs.prerelease }}}" \
+              "${API_URL}/repos/${REPO}/releases"
+          fi
+
+      - name: create github release on the mirror 🪞
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          RELEASE_NOTES: ${{ steps.changelog.outputs.notes }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          PRERELEASE_FLAG=""
+          if [ "${{ steps.version.outputs.prerelease }}" = "true" ]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+
+          # wait for forgejo mirror to sync the tag to github 🪞
+          echo "waiting for forgejo mirror to sync the tag to github..."
+          for i in $(seq 1 30); do
+            if gh api repos/phsk69/litty-logs-go/git/refs/tags/"${TAG}" --silent 2>/dev/null; then
+              echo "tag ${TAG} found on github lets gooo 🔥"
+              break
+            fi
+            if [ "$i" = "30" ]; then
+              echo "bruh tag ${TAG} still not on github after 30 tries thats not it 💀"
+              exit 1
+            fi
+            echo "mirror aint synced yet, waiting 2s... (attempt ${i}/30)"
+            sleep 2
+          done
+
+          if gh release view "${TAG}" --repo "phsk69/litty-logs-go" > /dev/null 2>&1; then
+            echo "github release already exists 💅"
+          else
+            gh release create "${TAG}" \
+              --repo "phsk69/litty-logs-go" \
+              --title "v${VERSION} — new drop 🔥" \
+              --notes "$RELEASE_NOTES" \
+              $PRERELEASE_FLAG
+          fi
