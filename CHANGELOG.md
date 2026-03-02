@@ -2,6 +2,13 @@
 
 all the glow ups and level ups for litty-logs-go no cap
 
+## [0.1.1] - 2026-03-02
+
+### hotfix — proxy poke timing 🔧
+
+- fixed release pipeline poking proxy.golang.org before GitHub mirror had the tag synced (404 city 💀)
+- moved proxy poke step to after GitHub mirror sync confirmation
+
 ## [0.1.0] - 2026-03-02
 
 ### the genesis drop — Go edition 🔥

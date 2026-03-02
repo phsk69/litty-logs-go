@@ -42,11 +42,6 @@ jobs:
       - name: test one more time for the culture 🧪
         run: go test -v -race -count=1 ./...
 
-      - name: poke proxy.golang.org to index the module 📡
-        run: |
-          GOPROXY=https://proxy.golang.org GO111MODULE=on \
-            go list -m github.com/phsk69/litty-logs-go@${{ steps.version.outputs.tag }} || true
-
       - name: extract changelog section for this version 📜
         id: changelog
         run: |
@@ -121,3 +116,8 @@ jobs:
               --notes "$RELEASE_NOTES" \
               $PRERELEASE_FLAG
           fi
+
+      - name: poke proxy.golang.org to index the module 📡
+        run: |
+          GOPROXY=https://proxy.golang.org GO111MODULE=on \
+            go list -m github.com/phsk69/litty-logs-go@${{ steps.version.outputs.tag }} || true
