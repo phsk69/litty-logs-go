@@ -128,11 +128,11 @@ just release patch
 
 ## roadmap 🗺️
 
+- [ ] CLI tool (`go install` litty command for litty-fied builds/tests)
 - [ ] JSON structured output (litty-json)
 - [ ] file sink with rotation and compression
 - [ ] message rewriting (Go framework messages → gen alpha slang)
 - [ ] webhook sinks (Matrix, Teams)
-- [ ] CLI tool (`go install` litty command for litty-fied builds/tests)
 
 ## license 📄
 
