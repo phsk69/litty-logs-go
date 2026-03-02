@@ -7,6 +7,9 @@
 *.test
 *.out
 
+# compiled example binaries — Go on linux makes extensionless binaries bestie
+examples/basic/basic
+
 # Go workspace
 go.work
 go.work.sum
