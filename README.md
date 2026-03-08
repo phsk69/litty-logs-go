@@ -81,6 +81,52 @@ opts.TimestampFirst = true
 logger := slog.New(litty.NewHandlerWithOptions(opts))
 ```
 
+## CLI tool 🔥
+
+litty also comes as a CLI tool that wraps Go commands with gen alpha output. install it and never look at boring `go test` output again bestie
+
+### install
+
+```bash
+go install github.com/phsk69/litty-logs-go/cmd/litty@latest
+```
+
+### usage
+
+```bash
+litty test ./...              # go test but bussin 🧪
+litty test -run TestFoo       # run specific test 🎯
+litty build ./cmd/myapp       # go build but litty 🏗️
+litty run ./cmd/myapp         # go run with litty compile errors 🏃
+litty vet ./...               # go vet with gen alpha vibes 🔍
+litty clean                   # see whats getting yeeted 🗑️
+```
+
+all args after the command get passed straight to the go tool. auto-injects `-v` for test and `-x` for clean so theres always output to rewrite 💅
+
+### before vs after 💀➡️🔥
+
+**before (boring go test):**
+```
+=== RUN   TestFoo
+--- PASS: TestFoo (0.00s)
+=== RUN   TestBar
+--- FAIL: TestBar (0.01s)
+    bar_test.go:15: expected 5, got 3
+FAIL
+```
+
+**after (litty test):**
+```
+🔥 litty test — lets cook bestie
+🏃 running TestFoo...
+✅ TestFoo absolutely slayed (0.00s) 🔥
+🏃 running TestBar...
+💀 TestBar took a fat L (0.01s)
+    ↳ bar_test.go:15: expected 5, got 3
+💀 tests took a massive L, not bussin at all
+```
+
 ## log levels 🎯
 
 | level | emoji | label | color | vibe |
@@ -128,7 +174,7 @@ just release patch
 
 ## roadmap 🗺️
 
-- [ ] CLI tool (`go install` litty command for litty-fied builds/tests)
+- [x] CLI tool (`go install` litty command for litty-fied builds/tests)
 - [ ] JSON structured output (litty-json)
 - [ ] file sink with rotation and compression
 - [ ] message rewriting (Go framework messages → gen alpha slang)

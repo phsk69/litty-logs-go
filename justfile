@@ -12,6 +12,18 @@ test *args:
 vet:
     go vet ./...
 
+# install the litty CLI tool to your GOPATH/bin — global rizz 🔥
+install:
+    go install ./cmd/litty
+
+# build the litty CLI binary locally 🏗️
+build-cli:
+    go build -o litty ./cmd/litty
+
+# run litty with args — usage: just litty test ./... 🔥
+litty *args:
+    go run ./cmd/litty {{args}}
+
 # run the basic example — see litty-logs in action bestie 🔥
 example:
     cd examples/basic && go run .

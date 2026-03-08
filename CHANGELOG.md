@@ -2,6 +2,26 @@
 
 all the glow ups and level ups for litty-logs-go no cap
 
+## [0.2.0] - 2026-03-04
+
+### the CLI drop — go commands but make them gen alpha 🔥
+
+the litty CLI tool has entered the chat bestie. wraps your Go commands and rewrites the output so its absolutely bussin. no more boring `go test` terminal output fr fr
+
+#### added
+- `litty test` — `go test` but every line hits different with emojis and colors 🧪
+- `litty build` — `go build` with litty error messages that actually slap 🏗️
+- `litty run` — `go run` with litty compile error drip (program output passes through untouched) 🏃
+- `litty vet` — `go vet` findings but the vibes are gen alpha 🔍
+- `litty clean` — see whats getting yeeted in real time with `-x` auto-injection 🗑️
+- auto-injects `-v` for test so output is always verbose enough to rewrite 💅
+- composable rewriter architecture — test falls back to build for compile errors
+- dual-stream goroutine capture — both stdout and stderr get the litty treatment
+- exit code passthrough for CI/CD compatibility no cap
+- installable via `go install github.com/phsk69/litty-logs-go/cmd/litty@latest` 📦
+- `litty help` and `litty version` commands for the basics bestie
+- 1MB scanner buffer for handling even the most unhinged test output dumps
+
 ## [0.1.1] - 2026-03-02
 
 ### hotfix — proxy poke timing 🔧

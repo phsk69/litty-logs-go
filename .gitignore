@@ -10,6 +10,9 @@
 # compiled example binaries — Go on linux makes extensionless binaries bestie
 examples/basic/basic
 
+# litty CLI binary — dont commit the binary bestie, only the source 💅
+/litty
+
 # Go workspace
 go.work
 go.work.sum
