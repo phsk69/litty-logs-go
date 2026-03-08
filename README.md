@@ -81,6 +81,33 @@ opts.TimestampFirst = true
 logger := slog.New(litty.NewHandlerWithOptions(opts))
 ```
 
+## JSON structured output 🔥
+
+need structured logs for log aggregators (Loki, Grafana, etc)? litty-json outputs one compact JSON object per line with literal emojis. machines can parse it AND it still looks fire in a terminal no cap
+
+```go
+logger := litty.NewJSONLogger()
+logger.Info("request received", "method", "GET", "path", "/api/vibes")
+```
+
+output:
+```json
+{"timestamp":"2026-03-02T21:45:00.420Z","level":"info","emoji":"🔥","category":"app","message":"request received","method":"GET","path":"/api/vibes"}
+```
+
+same `With*()` options as the text handler. same `WithGroup()` and `WithAttrs()`. just swap `NewLogger` for `NewJSONLogger` bestie 💅
+
+```go
+// categorized JSON logs
+logger := litty.NewJSONLogger()
+serviceLogger := logger.WithGroup("PaymentService")
+serviceLogger.Info("payment processed", "amount", 42.69)
+
+// pre-resolved attrs on every log
+requestLogger := logger.With("requestId", "abc-123")
+requestLogger.Info("request processed", "duration", "420ms")
+```
+
 ## CLI tool 🔥
 
 litty also comes as a CLI tool that wraps Go commands with gen alpha output. install it and never look at boring `go test` output again bestie
@@ -175,7 +202,7 @@ just release patch
 ## roadmap 🗺️
 
 - [x] CLI tool (`go install` litty command for litty-fied builds/tests)
-- [ ] JSON structured output (litty-json)
+- [x] JSON structured output (litty-json)
 - [ ] file sink with rotation and compression
 - [ ] message rewriting (Go framework messages → gen alpha slang)
 - [ ] webhook sinks (Matrix, Teams)

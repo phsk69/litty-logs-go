@@ -2,6 +2,19 @@
 
 all the glow ups and level ups for litty-logs-go no cap
 
+## [0.2.0-dev1] — 2026-03-08
+
+### JSON structured output + litty CI vibes 🔥
+
+#### added
+- `JSONHandler` implementing `slog.Handler` — structured JSON with literal emojis for log aggregators 📦
+- `NewJSONHandler()`, `NewJSONHandlerWithOptions()`, `NewJSONLogger()` — same API shape as text handler 💅
+- one compact JSON object per line with fields: timestamp, level, emoji, category, message + flat attrs
+- proper JSON types — ints stay ints, bools stay bools, floats stay floats bestie
+- literal emoji serialization — 🔥 not `\uD83D\uDD25`, Go is built different
+- `examples/json/` — example showing all levels, groups, attrs
+- CI pipeline now uses `litty build/vet/test` for fire emoji output in pipeline logs 🔥
+
 ## [0.2.0] - 2026-03-04
 
 ### the CLI drop — go commands but make them gen alpha 🔥
