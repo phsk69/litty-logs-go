@@ -37,7 +37,9 @@ jobs:
           fi
 
       - name: install the litty CLI for fire release output 🔥
-        run: go install ./cmd/litty
+        run: |
+          go install ./cmd/litty
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: build one more time for the culture 🏗️
         run: litty build ./...

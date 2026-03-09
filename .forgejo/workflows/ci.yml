@@ -15,7 +15,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: install the litty CLI for fire CI output 🔥
-        run: go install ./cmd/litty
+        run: |
+          go install ./cmd/litty
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: build — make sure it compiles bestie 🏗️🔥
         run: litty build ./...
