@@ -2,13 +2,13 @@
 
 all the glow ups and level ups for litty-logs-go no cap
 
-## [0.2.0] - 2026-03-04
+## [0.2.0] — 2026-03-09
 
-### the CLI drop — go commands but make them gen alpha 🔥
+### the big drop — CLI tool + JSON handler, absolute unit of a release 🔥
 
-the litty CLI tool has entered the chat bestie. wraps your Go commands and rewrites the output so its absolutely bussin. no more boring `go test` terminal output fr fr
+the litty CLI tool AND structured JSON logging both dropped in one release bestie. your Go commands now hit different AND your log aggregators are eating good no cap
 
-#### added
+#### added — litty CLI tool 🛠️
 - `litty test` — `go test` but every line hits different with emojis and colors 🧪
 - `litty build` — `go build` with litty error messages that actually slap 🏗️
 - `litty run` — `go run` with litty compile error drip (program output passes through untouched) 🏃
@@ -21,6 +21,17 @@ the litty CLI tool has entered the chat bestie. wraps your Go commands and rewri
 - installable via `go install github.com/phsk69/litty-logs-go/cmd/litty@latest` 📦
 - `litty help` and `litty version` commands for the basics bestie
 - 1MB scanner buffer for handling even the most unhinged test output dumps
+
+#### added — JSONHandler 📦
+- `JSONHandler` implementing `slog.Handler` — structured JSON with literal emojis for log aggregators
+- `NewJSONHandler()`, `NewJSONHandlerWithOptions()`, `NewJSONLogger()` — same API shape as text handler 💅
+- one compact JSON object per line with fields: timestamp, level, emoji, category, message + flat attrs
+- proper JSON types — ints stay ints, bools stay bools, floats stay floats bestie
+- literal emoji serialization — 🔥 not `\uD83D\uDD25`, Go is built different
+- `examples/json/` — example showing all levels, groups, attrs
+
+#### added — CI vibes 🔥
+- CI pipeline now uses `litty build/vet/test` for fire emoji output in pipeline logs
 
 ## [0.1.1] - 2026-03-02
 

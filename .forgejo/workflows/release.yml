@@ -36,11 +36,16 @@ jobs:
             exit 1
           fi
 
+      - name: install the litty CLI for fire release output 🔥
+        run: |
+          go install ./cmd/litty
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
       - name: build one more time for the culture 🏗️
-        run: go build ./...
+        run: litty build ./...
 
       - name: test one more time for the culture 🧪
-        run: go test -v -race -count=1 ./...
+        run: litty test -race -count=1 ./...
 
       - name: extract changelog section for this version 📜
         id: changelog

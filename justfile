@@ -24,9 +24,18 @@ build-cli:
 litty *args:
     go run ./cmd/litty {{args}}
 
-# run the basic example — see litty-logs in action bestie 🔥
+# run all the examples — see litty-logs in action bestie 🔥
 example:
-    cd examples/basic && go run .
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for dir in examples/*/; do
+        name=$(basename "$dir")
+        echo "🔥 running ${name} example..."
+        echo "---"
+        (cd "$dir" && go run .)
+        echo ""
+    done
+    echo "all examples cooked no cap 🔥"
 
 # bump the version bestie — usage: just bump major|minor|patch 🔥
 bump part:
